@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: jaga-buku
+    runtime: docker
+    plan: 0.5c-512mb
+    region: singapore
+    healthCheckPath: /up
+    preDeployCommand: php artisan migrate --force
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: APP_URL
+        value: https://jaga-buku.onrender.com
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_URL
+        fromDatabase:
+          name: jaga-buku-db
+          property: connectionString
+      - key: DB_SSLMODE
+        value: require
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: MIDTRANS_IS_PRODUCTION
+        value: "true"
+
+databases:
+  - name: jaga-buku-db
+    databaseName: jaga_buku
+    user: jaga_buku
+    plan: 0.1c-256mb
+    region: singapore
